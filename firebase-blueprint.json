@@ -1,0 +1,27 @@
+{
+  "entities": {
+    "GalleryImage": {
+      "title": "Gallery Image",
+      "description": "An image uploaded to the gallery",
+      "type": "object",
+      "properties": {
+        "imageUrl": {
+          "type": "string",
+          "description": "The public URL of the uploaded image"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the image was uploaded"
+        }
+      },
+      "required": ["imageUrl", "createdAt"]
+    }
+  },
+  "firestore": {
+    "gallery": {
+      "schema": "GalleryImage",
+      "description": "Collection of gallery images"
+    }
+  }
+}

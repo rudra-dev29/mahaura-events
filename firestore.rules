@@ -1,0 +1,43 @@
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: gallery
+// Document ID: auto-generated
+// Fields:
+//   - imageUrl: string (required) - The URL of the image
+//   - createdAt: timestamp (required) - The time of upload
+//
+// ===============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isValidGalleryImage(data) {
+      return data.keys().hasAll(['imageUrl', 'createdAt']) &&
+             data.imageUrl is string &&
+             data.imageUrl.size() < 2048 &&
+             data.createdAt is timestamp;
+    }
+
+    match /gallery/{imageId} {
+      // Publicly readable
+      allow read: if true;
+
+      // Secure writes for the gallery
+      allow create: if isValidGalleryImage(request.resource.data);
+      allow update: if isValidGalleryImage(request.resource.data);
+      allow delete: if true; // Allow delete for now, can be restricted to admin later
+    }
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
